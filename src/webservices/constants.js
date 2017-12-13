@@ -1,0 +1,1 @@
+export const BASE_RUL = 'http://146.185.137.85/got/web'

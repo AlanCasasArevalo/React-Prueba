@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { View, Button, Text, FlatList } from 'react-native'
-import axios from 'axios'
+import { View, Button, Text, FlatList, StyleSheet } from 'react-native'
+import { AsyncCalls, Colors } from 'prueba/src/commons'
+
 
 export default class HouseList extends Component {
 
@@ -15,30 +16,38 @@ export default class HouseList extends Component {
     }
 
     componentWillMount() {
-        let list = null
-        axios.get('http://146.185.137.85/got/web/casas')
-            .then((response) => {
-                console.log("Axios ger tespons", response);
-                const houseList = response.data && response.data.records ? response.data.records : []
-
-                // Es lo mismo todas las sentencias.
-                // this.setState({ list : list })
-                // this.setState({
-                //     list : response.data && response.data.records ? response.data.records : []
-                // })
-                this.setState({ list : houseList })
-            })
-            .catch((error) => {
-                console.log("Axios ger tespons", error);
-            });
+        AsyncCalls.fetchHouseList()
+        .then((response) => {
+            const houseList = response.data && response.data.records ? response.data.records : []
+            this.setState({ list : houseList })
+        })
+        .catch((error) => {
+            console.log("Axios ger tespons", error);
+        });
     }
 
-    renderItemFromHouseList(item){
+    checkIfIsSelectedItem(item){
+        if (this.state.selected && (this.state.selected.nombre == item.nombre)){
+            return true
+        }else{
+            return false
+        }
+    }
+
+    renderItemFromHouseList(item, index){
+        // const cellStyle = {backgroundColor: 'pink'}
+        const isSelected = this.checkIfIsSelectedItem(item)
+        const cellStyle = isSelected ? { backgroundColor: Colors.pink } : { backgroundColor: Colors.red }
+        const titleStyle = isSelected ? { color: 'white' } : { color: 'black' }
+
         return(
-            <View style={ { height: 200, backgroundColor: 'red', marginVertical: 10 } }>
-                <Text>{item.nombre}</Text>
-                <Text> {item.lema} </Text>
-                <Text> {item.id} </Text>
+            //Manda siempre el ultimo objeto
+            <View style={ [styles.cell, cellStyle] }>
+                <Text
+                style={ titleStyle }
+                >
+                    {item.nombre}
+                </Text>
                 <Button
                     title={ 'Selecciona una casa:' }
                     onPress={() => this.setState({ selected: item })}
@@ -48,20 +57,17 @@ export default class HouseList extends Component {
     }
 
     render() {
-
         const nombre = this.state.selected ? this.state.selected.nombre : ''
-
         return (
             <View>
-                <Text>
-                    Lista de casas
-                </Text>
-                <Text>
-                    {'Casa seleccionada: ' + nombre }
+                <Text style={ styles.title }>
+                    { nombre }
                 </Text>
                 <FlatList
                 data={ this.state.list }
-                renderItem={ ({item}) =>  this.renderItemFromHouseList(item)  }
+                renderItem={ ({item, index}) =>  this.renderItemFromHouseList(item, index)  }
+                keyExtractor={ (item, index) => item.id}
+                extraData={ this.state }
                 // renderItem={ ({item}) => {
                 //     return (
                 //         <Text>{item.nombre}</Text>
@@ -73,3 +79,15 @@ export default class HouseList extends Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    cell:{
+        height: 200,
+        marginVertical: 10
+    },
+    title: {
+        fontSize:20,
+        textAlign: 'center',
+        margin: 20
+    }
+})

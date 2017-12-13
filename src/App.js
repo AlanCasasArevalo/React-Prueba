@@ -1,15 +1,17 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
 
 import React, { Component } from 'react';
 import { Actions, Scene, Router } from 'react-native-router-flux';
 import { StyleSheet, View } from 'react-native';
 import HousesLists from './sections/houses/HousesLists'
 
+import * as webservices from 'prueba/src/webservices/webservices'
+
 export default class App extends Component {
+
+  componentWillMount(){
+    webservices.configureAxios()
+  }
+
   render() {
     return (
       <Router>
