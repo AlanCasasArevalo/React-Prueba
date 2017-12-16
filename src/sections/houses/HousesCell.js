@@ -13,8 +13,6 @@ export default class HousesCell extends Component{
         const { item, onSelect } = this.props
         const imageURL = item.image_dir ? { uri : item.image_dir } : null
         // const imageURL = item.image_dir ? { uri : item.image_dir } : require('path_a_nuestra_imagen_por_defecto')
-        
-        console.log("El item es : ", item)
         return (
             <TouchableOpacity onPress={ () => onSelect(item) } style={styles.container} >
                 <Image source={ imageURL } style={styles.image} resizeMode={'contain'} />

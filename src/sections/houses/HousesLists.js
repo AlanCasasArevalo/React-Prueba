@@ -48,7 +48,7 @@ class HouseList extends Component {
                     ListFooterComponent={ () => this.renderFooter() }
                     renderItem={ ({item, index}) =>  this.renderItemFromHouseList(item, index) }
                     keyExtractor={ (item, index) => item.id}
-                    extraData={ this.state }
+                    extraData={ this.props }
                     numColumns={2}
                 />
 
