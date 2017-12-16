@@ -7,7 +7,9 @@ export function configureAxios() {
 }
 
 export function fetch(url){
-    return axios.get(url).then((response) => {
+    return axios
+    .get(url)
+    .then((response) => {
         return response.data
     }).catch((error) => {
         throw error
@@ -15,7 +17,9 @@ export function fetch(url){
 }
 
 export function post(url, data) {
-    return axios.post(url, data).then(response => {
+    return axios
+    .post(url, data)
+    .then(response => {
         return response.data
     }).catch(error => {
         throw error

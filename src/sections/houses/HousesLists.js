@@ -1,62 +1,88 @@
 import React, { Component } from 'react'
-import { View, Button, Text, FlatList, StyleSheet } from 'react-native'
+import { View, Button, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native'
 import { AsyncCalls, Colors } from 'prueba/src/commons'
 import HousesCell from './HousesCell'
 
-export default class HouseList extends Component {
-    constructor(props) {
-        super(props)
+import { Actions } from 'react-native-router-flux'
 
-        this.state = {
-            list: [],
-            selected: null
-        }
-    }
+import { connect } from 'react-redux'
+import * as HousesActions from 'prueba/src/redux/actions/houses'
 
 
-
-    componentWillMount() {
-        AsyncCalls.fetchHouseList()
-        .then((response) => {
-            const houseList = response.data && response.data.records ? response.data.records : []
-            this.setState({ list : houseList })
-        })
-        .catch((error) => {
-            console.log("Axios ger tespons", error);
-        });
+class HouseList extends Component {
+    
+    componentDidMount() {
+        this.props.fethHousesList()
     }
 
     onSelect(house){
-        this.setState({selected:house})
+        this.props.updateSelected(house)
     }
+
+    renderFooter() {
+        return <ActivityIndicator 
+                    animating={this.props.isFetching} 
+                    size="large" 
+                    color="grey" 
+                    style={{ marginVertical: 20 }} 
+                />
+    }
+
+
 
     renderItemFromHouseList(item, index){
         return (
             <HousesCell item={item}
-                onSelect={ (house) => this.onSelect(house) }
+                onSelect={ ( v ) => this.onSelect( v ) }
             />
         )
     }
 
     render() {
+
         return (
             <View style={styles.container}>
+
                 <FlatList
-                data={ this.state.list }
-                renderItem={ ({item, index}) =>  this.renderItemFromHouseList(item, index)  }
-                keyExtractor={ (item, index) => item.id}
-                extraData={ this.state }
-                numColumns={2}
+                    data={ this.props.list }
+                    ListFooterComponent={ () => this.renderFooter() }
+                    renderItem={ ({item, index}) =>  this.renderItemFromHouseList(item, index) }
+                    keyExtractor={ (item, index) => item.id}
+                    extraData={ this.state }
+                    numColumns={2}
                 />
+
             </View>
         )
     }
 }
 
+const mapStateToPros = (state) => {
+    return { 
+        list : state.houses.list,
+        selected: state.houses.item,
+        isFetching: state.houses.isFetching
+    }
+}
+
+const mapDispatchToPros = (dispatch, props) => {
+    return{
+        fethHousesList: () => {
+            dispatch(HousesActions.fethHousesList())
+        },
+        updateSelected: (house) => {
+            dispatch(HousesActions.updateHouseSelected(house))
+            Actions.CharactersList( { title: house.nombre } )
+        }
+    }
+}
+
+export default connect(mapStateToPros, mapDispatchToPros)(HouseList)
+
 const styles = StyleSheet.create({
     container :{
         flex : 1,
-        backgroundColor: 'rgb(42,42,42)',
+        backgroundColor: Colors.background,
         paddingVertical: 20
     }
 })
