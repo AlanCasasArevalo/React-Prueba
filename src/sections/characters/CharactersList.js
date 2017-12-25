@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import {FlatList, View,Text, StyleSheet} from 'react-native'
+import { FlatList, View,Text, StyleSheet } from 'react-native'
 import { Colors } from 'prueba/src/commons' 
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 import * as CharactersActions from 'prueba/src/redux/actions/characters'
 import CharactersCell from "./CharactersCell";
-
-
+import { Actions } from "react-native-router-flux";
 
 class CharactersList extends Component {
 
@@ -27,7 +26,6 @@ class CharactersList extends Component {
         )
     }
 
-
     render(){
 
          return(
@@ -47,22 +45,24 @@ class CharactersList extends Component {
 }
 
 const mapStateToPros = (state) => {
-    return { 
+
+    return {
         house : state.houses.item,
-        list : state.characters.list
+        list : state.characters.list,
+        character : state.characters.item
     }
 }
 
 const mapDispatchToPros = (dispatch, props) => {
     return{
-        fetchCharacterList: (houseId) => {
-            dispatch(CharactersActions.fetchCharacterList(houseId))
-            dispatch(CharactersActions.fetchCharacterList(houseId))
+        fetchCharacterList: ( houseId ) => {
+            dispatch(CharactersActions.fetchCharacterList( houseId ))
         },
 
         updateSelected: (character) =>{
             console.log("updateSelected Seleccionado", character)
-
+            dispatch(CharactersActions.updateCharacterSelected(character))
+            Actions.CharacterViewDetail({ title: character.nombre })
         }
     }
 }

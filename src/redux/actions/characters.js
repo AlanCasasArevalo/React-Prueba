@@ -28,6 +28,7 @@ function setCharacterFetching(value) {
 export function fetchCharacterList(houseId) {
     return (dispatch, getState) => {
 
+        //Forma alternativa de acceder al state global
         // const state = getState()
         // const houseIdAlternativo = state.houses.item ? state.houses.item.id : null
 
@@ -37,7 +38,7 @@ export function fetchCharacterList(houseId) {
         const fetchURL = '/personajes?casa=' + houseId
 
         fetch(fetchURL).then( response => {
-            console.log(" fetchCharacterList response ", response)
+            // console.log(" fetchCharacterList response ", response)
 
             dispatch(setCharacterFetching(false))
             dispatch(updateCharacterList(response.records))

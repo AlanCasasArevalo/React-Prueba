@@ -8,12 +8,14 @@ import { Colors } from 'prueba/src/commons'
 
 import * as webservices from 'prueba/src/webservices/webservices'
 
+
 import {createStore, combineReducers} from 'redux'
 import { Provider,  connect } from 'react-redux'
 import thunk from 'redux-thunk'
 
 import * as reducers from './redux/reducers'
 import { applyMiddleware } from 'redux';
+import CharacterViewDetail from "./sections/characters/CharacterViewDetail";
 
 const reducer = combineReducers(reducers)
 const store = createStore(
@@ -41,8 +43,10 @@ export default class App extends Component {
             <Scene key={'CharactersList'}
               component={CharactersList}
               navigationBarStyle={styles.navBar}
+              navBarButtonColor={'white'}
               >                
             </Scene>
+            <Scene key={'CharacterViewDetail'} component={CharacterViewDetail}/>
           </Scene>
         </Router>
       </Provider>
@@ -52,8 +56,8 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   navBar:{
-    backgroundColor: Colors.navBarColor
-  }
+    backgroundColor: Colors.navBarColor,
+  },
 });
 
 

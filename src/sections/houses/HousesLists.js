@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Button, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native'
 import { AsyncCalls, Colors } from 'prueba/src/commons'
-import HousesCell from './HousesCell'
+import HousesCell from './HousesCell.js'
 
 import { Actions } from 'react-native-router-flux'
 
